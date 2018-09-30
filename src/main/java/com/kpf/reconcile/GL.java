@@ -11,4 +11,5 @@ public class GL {
   String description;
   Double amount;
   Long entryNumber;
+  Boolean matched = false;
 }
