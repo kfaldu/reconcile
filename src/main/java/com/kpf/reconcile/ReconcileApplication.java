@@ -3,7 +3,9 @@ package com.kpf.reconcile;
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
+import com.opencsv.CSVWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,6 +24,8 @@ public class ReconcileApplication {
     List<GL> glList = loadObjectList(GL.class, "gl.csv");
     List<Bank> bankList = updateBankList(loadObjectList(Bank.class, "bank.csv"));
     getPerfectMatch(bankList, glList);
+    writeObjectList(Bank.class, bankList, "bankMatched.csv");
+    writeObjectList(GL.class, glList, "glMatched.csv");
     System.out.println();
   }
 
@@ -62,6 +66,20 @@ public class ReconcileApplication {
     } catch (Exception e) {
       log.error("Error occurred while loading object list from file " + fileName, e);
       return Collections.emptyList();
+    }
+  }
+
+  public static <T extends CsvWriterInterface> void writeObjectList(Class<T> type,
+      List<T> objectList, String fileName) {
+    try {
+      CSVWriter writer = new CSVWriter(new FileWriter(fileName));
+      for (T object : objectList) {
+        writer.writeNext(object.toStringArray());
+      }
+      writer.close();
+
+    } catch (Exception e) {
+      log.error("Error occurred while creating object list to file " + fileName, e);
     }
   }
 }
