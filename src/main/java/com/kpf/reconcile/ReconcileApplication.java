@@ -17,8 +17,13 @@ public class ReconcileApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(ReconcileApplication.class, args);
+
     List<GL> glList = loadObjectList(GL.class, "gl.csv");
     System.out.println(glList);
+
+    List<Bank> bankList = loadObjectList(Bank.class, "bank.csv");
+    System.out.println(bankList);
+
   }
 
 	public static <T> List<T> loadObjectList(Class<T> type, String fileName) {
