@@ -21,6 +21,8 @@ public class ReconcileApplication {
 
     List<GL> glList = loadObjectList(GL.class, "gl.csv");
     List<Bank> bankList = updateBankList(loadObjectList(Bank.class, "bank.csv"));
+    getPerfectMatch(bankList, glList);
+    System.out.println();
   }
 
   public static List<Bank> updateBankList(List<Bank> bankList) {
@@ -35,6 +37,18 @@ public class ReconcileApplication {
   }
 
   public static void getPerfectMatch(List<Bank> bankList, List<GL> glList) {
+    bankList.forEach(bank -> {
+      long numberOfMatchedGl = glList.stream().filter(gl -> gl.amount.equals(bank.amount)).count();
+      if (numberOfMatchedGl == 1) {
+        glList.forEach(gl -> {
+          if (gl.amount.equals(bank.amount)) {
+            bank.matched = true;
+            bank.entryList.add(gl.entryNumber);
+            gl.matched = true;
+          }
+        });
+      }
+    });
   }
 
   public static <T> List<T> loadObjectList(Class<T> type, String fileName) {
